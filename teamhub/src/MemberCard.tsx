@@ -2,7 +2,7 @@
 import Card from './Card';
 import Badge from './Badge';
 import Avatar from './Avatar';
-import { Member } from './types';
+import type { Member } from './types';
 
 export default function MemberCard({ member }: { member: Member }) {
   return (
