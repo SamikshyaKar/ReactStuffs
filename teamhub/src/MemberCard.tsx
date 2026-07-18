@@ -1,27 +1,21 @@
-type Member = {
-  id: number;
-  name: string;
-  role: string;
-  onLeave: boolean;
-  isLead: boolean;
-  projectCount: number;
-};
+
+import Card from './Card';
+import Badge from './Badge';
+import Avatar from './Avatar';
+import { Member } from './types';
 
 export default function MemberCard({ member }: { member: Member }) {
   return (
-    <div style={{ border: '1px solid #ccc', borderRadius: 8, padding: 12, marginBottom: 8 }}>
-      <h3>
-        {member.name} {member.isLead && '⭐'}
-      </h3>
-      <p>{member.role}</p>
+    <Card title={member.name}>
+      <Avatar name={member.name} />
+      <span>{member.role}</span>
 
-      {member.onLeave ? (
-        <p style={{ color: 'orange' }}>On leave</p>
-      ) : (
-        <p style={{ color: 'green' }}>Available</p>
-      )}
+      {member.isLead && <Badge label="Lead" />}
+      {member.onLeave
+        ? <Badge label="On leave" color="orange" />
+        : <Badge label="Available" color="seagreen" />}
 
-      <p>Projects: {member.projectCount}</p>
-    </div>
+      {member.projectCount > 0 && <p>Projects: {member.projectCount}</p>}
+    </Card>
   );
 }
