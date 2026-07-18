@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MemberCard from './MemberCard';
 import type { Member } from './types';
-
-const initialMembers: Member[] = [
-  { id: 1, name: 'Samikshya', role: 'Architect', onLeave: false, isLead: true,  projectCount: 3 },
-  { id: 2, name: 'Ravi',      role: 'Developer', onLeave: true,  isLead: false, projectCount: 0 },
-  { id: 3, name: 'Priya',     role: 'QA',        onLeave: false, isLead: false, projectCount: 2 },
-];
+import { fetchMembers } from './api';
 
 export default function App() {
-  const [team, setTeam] = useState(initialMembers);
+  const [team, setTeam] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    fetchMembers()
+      .then((members) => setTeam(members))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   function toggleLeave(id: number) {
     setTeam(team.map((m) =>
@@ -21,6 +25,9 @@ export default function App() {
   const visibleMembers = team.filter((m) =>
     m.name.toLowerCase().includes(query.toLowerCase())
   );
+
+  if (loading) return <p>Loading team...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
 
   return (
     <>
